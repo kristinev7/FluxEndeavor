@@ -1,6 +1,6 @@
 public class Sword extends Weapon {
   private int slash = 5;
-  private int phoenixSlash = 14;
+  private int phoenixSlash = 10;
 
   @Override
   public int basicAttack() {
@@ -10,7 +10,7 @@ public class Sword extends Weapon {
   @Override
   public int specialAttack() {
     return phoenixSlash;
-  }
+  } 
 
   @Override
   public String getDamageDescription() {

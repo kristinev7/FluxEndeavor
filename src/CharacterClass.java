@@ -3,19 +3,22 @@ public abstract class CharacterClass implements Health {
   private int agility;
   private int intelligence;
   private int health;
+  private Weapon weapon;
 
   public CharacterClass() {
     this.strength = 0;
     this.agility = 0;
     this.intelligence = 0;
     this.health = 100;
+    this.weapon = null;
   }
 
-  public CharacterClass(int strength, int agility, int intelligence, int health) {
+  public CharacterClass(int strength, int agility, int intelligence, int health, Weapon weapon) {
     this.strength = strength;
     this.agility = agility;
     this.intelligence = intelligence;
     this.health = health;
+    this.weapon = weapon;
   }
 
   // getters
@@ -35,6 +38,10 @@ public abstract class CharacterClass implements Health {
     return this.health;
   }
 
+  public Weapon getWeapon() {
+    return this.weapon;
+  }
+
   // setters
   public void setStrength(int strength) {
     this.strength = strength;
@@ -50,6 +57,24 @@ public abstract class CharacterClass implements Health {
 
   public void setHealth(int health) {
     this.health = health;
+  }
+
+  public void setWeapon(Weapon weapon) {
+    this.weapon = weapon;
+  }
+
+  public int basicAttack() {
+    if (weapon != null) {
+      return weapon.basicAttack();
+    }
+    return 0;
+  }
+
+  public int specialAttack() {
+    if (weapon != null) {
+      return weapon.specialAttack(); 
+    }
+    return 0;
   }
   
   public void receiveDamage(int damage) {

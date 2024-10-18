@@ -55,7 +55,7 @@ public class Game {
   }
 
   public void displayWeaponStats() {
-    Weapon weapon = player.getWeapon();
+    Weapon weapon = player.getCharacterClass().getWeapon();
     System.out.println(weapon + " Stats: ");
     System.out.println("\t" + weapon.getDamageDescription());
   }
@@ -91,38 +91,50 @@ public class Game {
 
   public int calculateAttackDamage(int playerLevel) {
     double diceRollMultiplier = rollDice(playerLevel);
-    Weapon weapon = player.getWeapon();
-    int basicAttackDamage = weapon.basicAttack();
+    int basicAttackDamage = player.getCharacterClass().basicAttack();
 
     // Debugging information
-    System.out.println("Dice Roll Multiplier: " + diceRollMultiplier);
-    System.out.println("Basic Attack Damage: " + basicAttackDamage);
+    // System.out.println("Dice Roll Multiplier: " + diceRollMultiplier);
+    // System.out.println("Basic Attack Damage: " + basicAttackDamage);
 
     double enhancedAttack = (basicAttackDamage * (1 + diceRollMultiplier));
-    System.out.println("Enhanced Attack Damage: " + enhancedAttack);
+    // System.out.println("Enhanced Attack Damage: " + enhancedAttack);
     return (int) Math.round(enhancedAttack);
   }
 
   public void attackEnemy(EnemyClass enemy) {
     int damage = calculateAttackDamage(player.getLevel()); 
-    // Determine damage based on player's stats, weapon, etc.
+    System.out.println("You dealth " + damage + " damage to the enemy!");
     enemy.receiveDamage(damage); // Apply damage
 
-    // Use the isAlive method if you've included it in the Health interface
-    if (!enemy.isAlive()) {
+    System.out.println("Enemy's remaining health " + enemy.getHealth());
+    // Use the isAlive method 
+    if (!enemy.isAlive() || enemy.getHealth() <= 0) {
       System.out.println("Enemy Defeated!");
-      // Handle post-defeat logic here (e.g., remove enemy, update game state, award
-      // XP)
-    }
-
-    // Or directly check health
-    if (enemy.getHealth() <= 0) {
-      System.out.println("Enemy Defeated!");
-      // Similar post-defeat logic as above
+      awardXP();
     }
   }
+  
+  //award xp to player
+  public void awardXP() {
+    int xpGained = 50;
+    System.out.println("You gained " + xpGained + " xp for defeating enemy!");
+    player.addXP(xpGained);
+  }
 
-  public void enemyTurn() {
+  //enemy's turn
+  public void enemyTurn() { 
+    EnemyClass enemy = getEnemy();
+    if ( enemy != null && enemy.isAlive()) {
+      int enemyAttackDamage = enemy.basicAttack();
+      System.out.println("The enemy attacks you for " + enemyAttackDamage + " damage!");
+      player.receiveDamage(enemyAttackDamage);
 
+      if (player.getCharacterClass().getHealth() <=0) {
+        System.out.println("You have been defeated!");
+      } else {
+        System.out.println("Your remaining health: " + player.getCharacterClass().getHealth());
+      }
+    } 
   }
 }

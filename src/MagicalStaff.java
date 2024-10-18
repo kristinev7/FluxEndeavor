@@ -1,10 +1,10 @@
 public class MagicalStaff extends Weapon {
-  private int mysticStrike = 6;
-  private int etherStorm = 13;
+  private int mysticStrike = 5;
+  private int etherStorm = 10;
 
   @Override
   public int basicAttack() {
-    return mysticStrike;
+    return mysticStrike; 
   }
 
   @Override

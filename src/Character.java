@@ -1,21 +1,22 @@
 public class Character { 
   private String name;
   private int level;
-  private CharacterClass characterClass;
-  private Weapon weapon;
+  private CharacterClass characterClass; 
+  private int currentXP;
+  private int xpForNextLevel;
 
   public Character() {
     this.name = "";
     this.level = 1;
     this.characterClass = new Warrior();
-    this.weapon = new Sword();
+    this.currentXP = 0;
+    this.xpForNextLevel = 100;
   }
 
-  public Character(String name, int level, CharacterClass characterClass, Weapon weapon) {
+  public Character(String name, int level, CharacterClass characterClass) {
     this.name = name;
     this.level = level;
     this.characterClass = characterClass;
-    this.weapon = weapon;
   }
 
   // getter
@@ -31,8 +32,8 @@ public class Character {
     return this.characterClass;
   }
 
-  public Weapon getWeapon() {
-    return this.weapon;
+  public int getCurrenctXP() {
+    return this.currentXP;
   }
 
   // setter
@@ -56,11 +57,7 @@ public class Character {
     this.characterClass = characterClass;
   }
 
-  public void setWeapon(Weapon weapon) {
-    this.weapon = weapon;
-  }
-
-  // player receives damage
+  // player or enemy receives damage
   // @Override
   public void receiveDamage(int damage) {
     this.characterClass.receiveDamage(damage);
@@ -72,5 +69,30 @@ public class Character {
   public void deathMessage() {
     System.out.println("You have died");
   }
+  
+  // leveling up player
+  public void addXP(int xp) {
+    this.currentXP += xp;
+    checkLevelUp();
+  }
 
+  public void checkLevelUp() {
+    if (currentXP >= xpForNextLevel) {
+      levelUp();
+    }
+  }
+
+  private void levelUp() {
+    level++;
+    currentXP -= xpForNextLevel; //carry over remaining xp to next level
+    xpForNextLevel = 100 * level;
+
+    // increasing level of other characteristics
+    characterClass.setStrength(characterClass.getStrength() + 5);
+    characterClass.setAgility(characterClass.getAgility() + 3);
+    characterClass.setIntelligence(characterClass.getIntelligence() +2);
+
+    System.out.println("level up! New Level: " + level);
+    System.out.println("New Stats -> Strength: " + characterClass.getStrength() + ", Agility: " + characterClass.getAgility() + ", Intelligence: " + characterClass.getIntelligence());
+  }
 }

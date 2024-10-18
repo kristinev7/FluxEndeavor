@@ -6,8 +6,8 @@ public abstract class EnemyClass extends CharacterClass {
     this.monsterLevel = 1;
   }
 
-  public EnemyClass(int strength, int agility, int intelligence, int health, int monsterLevel) {
-    super(strength, agility, intelligence, health);
+  public EnemyClass(int strength, int agility, int intelligence, int health, int monsterLevel, Weapon weapon) {
+    super(strength, agility, intelligence, health, weapon);
     this.monsterLevel = monsterLevel;
   }
 
@@ -22,4 +22,5 @@ public abstract class EnemyClass extends CharacterClass {
   public String getStats() {
     return "Strength: " + getStrength() + ", Agility: " + getAgility() + ", Intelligence: " + getIntelligence() + ", Health: " + getHealth();
   }
+  
 }

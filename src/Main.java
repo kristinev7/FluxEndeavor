@@ -1,10 +1,4 @@
 
-// import static org.junit.jupiter.api.Assertions.assertEquals;
-// import org.junit.jupiter.api.Test;
-// @Test
-// void addition() {
-//     assertEquals(2, 1 + 1);
-// }
 import java.util.Scanner;
 
 class Main {
@@ -15,7 +9,9 @@ class Main {
     CharacterClass characterClass = chooseCharacterClass(scanner);
     Weapon weapon = chooseWeapon(scanner);
 
-    Character player = new Character(playerName, 1, characterClass, weapon);
+    characterClass.setWeapon(weapon);
+    
+    Character player = new Character(playerName, 1, characterClass);
 
     Game game = new Game(player);
     game.startNewGame();
@@ -27,13 +23,25 @@ class Main {
     System.out.println("Let the battle begin!");
 
     int playerLevel = player.getLevel();
-    Weapon weaponChosen = game.getPlayer().getWeapon();
+    Weapon weaponChosen = game.getPlayer().getCharacterClass().getWeapon();
     System.out.println(weaponChosen + " basic attack: " + weaponChosen.basicAttack());
     
-    int attackDamage = increaseDamage(game, scanner, playerLevel);
-    System.out.println("New Basic Attack Damage: " + attackDamage);
-    System.out.println("Attack Now: (1) Attack!");
-    
+    // int attackDamage = increaseDamage(game, scanner, playerLevel);
+    // System.out.println("New Basic Attack Damage: " + attackDamage);
+
+    // Initiate attack phase
+    while (player.getCharacterClass().getHealth() > 0 && game.getEnemy().getHealth() > 0) {
+      boolean gameStatus = attackPhase(game, scanner);
+      if (!gameStatus) {
+        break;
+      }
+    }
+
+    if (player.getCharacterClass().getHealth() <= 0) {
+      System.out.println("You have been defeated!");
+    } else if (game.getEnemy().getHealth() <= 0) {
+      System.out.println("You defeated the enemy!");
+    }
     
   }
 
@@ -61,7 +69,7 @@ class Main {
     System.out.println("Roll dice to increase attack damage against enemy: (1) Roll (2) Skip");
     int rollChoice = scanner.nextInt();
     scanner.nextLine();
-    Weapon weapon = game.getPlayer().getWeapon();
+    Weapon weapon = game.getPlayer().getCharacterClass().getWeapon();
     switch (rollChoice) {
       case 1: 
         return game.calculateAttackDamage(playerLevel);
@@ -74,17 +82,23 @@ class Main {
   }
   private static CharacterClass chooseCharacterClass(Scanner scanner) {
     System.out.println("Choose your character class (1) Warrior (2) Mage (3) Ranger");
-    int classChoice = scanner.nextInt();
-    switch (classChoice) {
-      case 1:
-        return new Warrior();
-      case 2:
-        return new Mage();
-      case 3:
-        return new Ranger();
-      default:
-        System.out.println("Invalid choice, defaulting to Warrior");
-        return new Warrior();
+    String input = scanner.nextLine();
+    try {
+      int classChoice = Integer.parseInt(input);
+      switch (classChoice) {
+        case 1:
+          return new Warrior();
+        case 2:
+          return new Mage();
+        case 3:
+          return new Ranger();
+        default:
+          System.out.println("Invalid choice, defaulting to Warrior");
+          return new Warrior();
+      }
+    } catch (NumberFormatException e) {
+      System.out.println("Invalid Choice, Defaulting to Warrior");
+      return new Warrior();
     }
   }
 
@@ -105,8 +119,38 @@ class Main {
 
   }
 
-  // private static int attackPhase(Scanner scanner) {
+  private static boolean attackPhase(Game game, Scanner scanner) {
+    System.out.println("Attack Now: (1) Attack! (2) Run Away");
+    int actionChoice = scanner.nextInt();
+    scanner.nextLine();
     
-  // }
+    EnemyClass enemy = game.getEnemy();
+      if (enemy == null) {
+          System.out.println("There are no enemies to attack!");
+          return false;
+      }
+    
+    switch (actionChoice) {
+      case 1:
+        int attackDamage = game.calculateAttackDamage(game.getPlayer().getLevel());
+        game.attackEnemy(enemy);  // Apply damage and handle if the enemy is defeated
+
+        // Check if enemy is defeated
+        if (!enemy.isAlive()) {
+            System.out.println("You have defeated the enemy!");
+            game.awardXP();  // Award XP if the enemy is defeated
+        } else {
+            // Enemy gets a turn to attack 
+            game.enemyTurn();
+        }
+        return true;
+      case 2:
+        System.out.println("You decided to run away!");
+        return false;
+      default:
+        System.out.println("Invalid action. Skipping turn.");
+        return true;
+    }
+  }
 
 }

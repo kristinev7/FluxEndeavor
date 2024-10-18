@@ -1,23 +1,20 @@
 import java.util.Random;
 public class Goblin extends EnemyClass {
-  private Weapon weapon;
   
   public Goblin() {
-    super(6, 8, 9, 100, 1);
-    this.weapon = randomWeapon();
+    super(15, 15, 15, 100, 1, randomWeapon());
   }
 
   public Goblin(int strength, int agility, int intelligence, int health, int monsterLevel, Weapon weapon) {
-    super(strength, agility, intelligence, health, monsterLevel);
-    this.weapon = weapon;
+    super(strength, agility, intelligence, health, monsterLevel, weapon);
   }
   
-  private Weapon randomWeapon() {
+  private static Weapon randomWeapon() {
     Random random = new Random();
     int choice = random.nextInt(3);
     switch (choice) {
       case 0:
-        return new Sword();
+        return new Sword(); 
       case 1:
         return new MagicalStaff();
       case 2:
@@ -27,8 +24,21 @@ public class Goblin extends EnemyClass {
     }
   }
 
-  public Weapon getWeapon() {
-    return this.weapon;
+  @Override
+  
+  public int basicAttack() {
+    int weaponDamage = getWeapon().basicAttack();
+    int attackPower = getStrength() + weaponDamage;
+    System.out.println("Goblin attacks with " + getWeapon() + " for " + attackPower + " damage!");
+    return attackPower;
+  }
+
+  @Override
+  public int specialAttack() {
+    int weaponDamage = getWeapon().specialAttack();
+    int attackPower = getStrength() + weaponDamage;
+    System.out.println("Goblin uses a special attack with " + getWeapon() + " for " + attackPower + " damage!");
+    return attackPower;
   }
   
   @Override

@@ -3,7 +3,7 @@ public class Bow extends Weapon {
   private int barrage = 10;
 
   @Override
-  public int basicAttack() {
+  public int basicAttack() { 
     return piercing;
   }
 
